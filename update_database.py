@@ -18,8 +18,8 @@ def split_text(documents: list[Document]):
 
 
 def save_to_chroma(db_path,chunks: list[Document]):
-    if os.path.exists(db_path):
-        os.mkdir(db_path)
+    if not os.path.exists(db_path):
+        os.makedirs(db_path)
         db = Chroma(persist_directory=db_path, embedding_function=OllamaEmbeddings(model="llama3.1"),collection_metadata={"hnsw:space": "cosine"})
         print(f"Loaded existing database from {db_path}.")
         db.add_documents(chunks)
@@ -40,8 +40,8 @@ def get_documents(path):
     return list_of_documents
 
 
-db_path = "/Users/emirozturk/Desktop/GitHub/LocalRag/Chroma"
-docs_path = "/Users/emirozturk/Desktop/Pdf/"
+db_path = "/Chroma"
+docs_path = "/Pdf/"
 
 
 documents = get_documents(docs_path)

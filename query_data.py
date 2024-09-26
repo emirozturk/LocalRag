@@ -2,7 +2,6 @@ from langchain_chroma.vectorstores import Chroma
 from langchain_ollama.embeddings import OllamaEmbeddings
 from langchain_ollama.chat_models import ChatOllama
 from langchain.prompts import ChatPromptTemplate
-import sys
 import os
 
 PROMPT_TEMPLATE = """Answer the question using only on the given context:
@@ -22,7 +21,7 @@ def main(db_path):
         if inpt == ":exit":
             break
 
-        results = db.similarity_search_with_relevance_scores(inpt, k=3)
+        results = db.similarity_search_with_relevance_scores(inpt, k=5)
         if len(results) == 0:
             print("Sorry, can't find a result")
         else:
@@ -34,8 +33,11 @@ def main(db_path):
             response = model.invoke(prompt)
 
             docs = [doc.metadata.get("source", None) for doc, _score in results]
-            print(f"Response: {response.content }\n-------------\nFrom: {"\n".join(docs)}\n-------------\n")
+            doc_string = "\n".join(docs)
+            print(f"Response: {response.content }\n-------------\nFrom:\n{doc_string}\n-------------\n")
         
         
-db_path = "/Users/emirozturk/Desktop/GitHub/LocalRag/Chroma"
+db_path = "/Chroma"
+if not os.path.exists(db_path):
+    os.makedirs(db_path)
 main(db_path)
